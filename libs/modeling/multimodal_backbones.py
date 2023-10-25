@@ -33,7 +33,8 @@ class ConvTransformerBackbone(nn.Module):
         assert len(arch) == 3
         self.arch = arch
         self.max_len = max_len
-        self.relu = nn.ReLU(inplace=True)
+        #self.relu = nn.ReLU(inplace=True)      #Commented out as replaced by GELU
+        self.gelu = nn.GELU
         self.scale_factor = scale_factor
         self.use_abs_pe = use_abs_pe
         self.branch_type = branch_type
@@ -156,11 +157,13 @@ class ConvTransformerBackbone(nn.Module):
         mask_V = mask_A = mask
         # embedding network
         for idx in range(len(self.embd_V)):
-            x_V, mask_V = self.embd_V[idx](x_V, mask_V) 
-            x_V = self.relu(self.embd_norm_V[idx](x_V))
+            x_V, mask_V = self.embd_V[idx](x_V, mask_V)
+            # CHANGE RELU TO GELU (gaussian)
+            # CHANGE NORM FROM LAYER NORM TO GROUP NORM 
+            x_V = self.gelu(self.embd_norm_V[idx](x_V))
 
             x_A, mask_A = self.embd_A[idx](x_A, mask_A)
-            x_A = self.relu(self.embd_norm_A[idx](x_A))
+            x_A = self.gelu(self.embd_norm_A[idx](x_A))
 
         # training: using fixed length position embeddings
         if self.use_abs_pe and self.training:
