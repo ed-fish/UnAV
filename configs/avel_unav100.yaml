@@ -9,10 +9,11 @@ dataset: {
 model: {
   input_dim_V: 2048, 
   input_dim_A: 128,
-  use_abs_pe: True, 
+  use_abs_pe: False, 
   class_aware: True, 
   use_dependency: True,
-  backbone_version: "maxer",  #unav, maxer
+  #backbone_version: "maxer",  #unav, maxer
+  branch_type: "unav",
 }
 opt: {
   learning_rate: 0.0001, 
@@ -21,7 +22,7 @@ opt: {
   warmup_epochs: 5, 
 }
 loader: {
-  batch_size: 10,
+  batch_size: 5,
 }
 train_cfg: {
   loss_weight: 1, 
