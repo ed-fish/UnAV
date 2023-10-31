@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 import torch.utils.data
 # for visualization
-from torch.utils.tensorboard import SummaryWriter
+#from torch.utils.tensorboard import SummaryWriter
 
 # our code
 from libs.core import load_config
@@ -21,7 +21,7 @@ from libs.utils import (train_one_epoch, valid_one_epoch, ANETdetection,
                         fix_random_seed, ModelEma)
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 #test change########
 
@@ -52,7 +52,7 @@ def main(args):
     if not os.path.exists(ckpt_folder):
         os.mkdir(ckpt_folder)
     # tensorboard writer
-    tb_writer = SummaryWriter(os.path.join(ckpt_folder, 'logs'))
+    #tb_writer = SummaryWriter(os.path.join(ckpt_folder, 'logs'))
 
     # fix the random seeds (this will fix everything)
     rng_generator = fix_random_seed(cfg['init_rand_seed'], include_cuda=True)
@@ -151,7 +151,7 @@ def main(args):
             epoch,
             model_ema = model_ema,
             clip_grad_l2norm = cfg['train_cfg']['clip_grad_l2norm'],
-            tb_writer=tb_writer,
+            #tb_writer=tb_writer,
             print_freq=args.print_freq
         )
 
@@ -164,7 +164,7 @@ def main(args):
                     val_loader, 
                     model, epoch, 
                     evaluator=det_eval, 
-                    tb_writer=tb_writer,
+                    #tb_writer=tb_writer,
                     print_freq=args.print_freq
                     )
                 end = time.time()
@@ -206,7 +206,7 @@ def main(args):
             )
 
     # wrap up
-    tb_writer.close()
+    #tb_writer.close()
     print("All done!")
     return
 
