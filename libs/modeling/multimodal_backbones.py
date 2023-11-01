@@ -34,7 +34,7 @@ class ConvTransformerBackbone(nn.Module):
         self.arch = arch
         self.max_len = max_len
         #self.relu = nn.ReLU(inplace=True)      #Commented out as replaced by GELU
-        self.gelu = nn.GELU
+        self.gelu = nn.GELU()
         self.scale_factor = scale_factor
         self.use_abs_pe = use_abs_pe
         self.branch_type = branch_type
@@ -68,10 +68,12 @@ class ConvTransformerBackbone(nn.Module):
             )
             if with_ln:
                 self.embd_norm_V.append(
-                    LayerNorm(n_embd)
+                    #LayerNorm(n_embd)
+                    nn.GroupNorm(16, n_embd)
                 )
                 self.embd_norm_A.append(
-                    LayerNorm(n_embd)
+                    #LayerNorm(n_embd)
+                    nn.GroupNorm(16, n_embd)
                 )
             else:
                 self.embd_norm_V.append(nn.Identity())
