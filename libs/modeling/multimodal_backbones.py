@@ -64,14 +64,14 @@ class ConvTransformerBackbone(nn.Module):
                 ))
 
             # Define the video autoencoder
-            autoencoder_V = nn.Sequential(
-                nn.Conv1d(n_embd, n_embd //2 , kernel_size=3, stride=1, padding=1, bias=(not with_ln)),
-                nn.ReLU(),
-                nn.Conv1d(n_embd // 2, n_embd, kernel_size=3, stride=1, padding=1, bias=(not with_ln))
-            )
+            #autoencoder_V = nn.Sequential(
+                #nn.Conv1d(n_embd, n_embd //2 , kernel_size=3, stride=1, padding=1, bias=(not with_ln)),
+                #nn.ReLU(),
+                #nn.Conv1d(n_embd // 2, n_embd, kernel_size=3, stride=1, padding=1, bias=(not with_ln))
+            #)
 
             # Add the autoencoder components to self
-            self.autoencoder_V = autoencoder_V
+            #self.autoencoder_V = autoencoder_V
 
             #  AUDIO CONVOLUTION
             self.embd_A.append(MaskedConv1D(
@@ -82,7 +82,7 @@ class ConvTransformerBackbone(nn.Module):
             # Define the audio autoencoder
             autoencoder_A = nn.Sequential(
                 nn.Conv1d(n_embd, n_embd // 2, kernel_size=3, stride=1, padding=1, bias=(not with_ln)),
-                nn.ReLU(),
+                #nn.ReLU(),
                 nn.Conv1d(n_embd // 2, n_embd, kernel_size=3, stride=1, padding=1, bias=(not with_ln))
             )
 
@@ -93,12 +93,12 @@ class ConvTransformerBackbone(nn.Module):
 
             if with_ln:
                 self.embd_norm_V.append(
-                    #LayerNorm(n_embd)
-                    nn.GroupNorm(16, n_embd)
+                    LayerNorm(n_embd)
+                    #nn.GroupNorm(16, n_embd)
                 )
                 self.embd_norm_A.append(
-                    #LayerNorm(n_embd)
-                    nn.GroupNorm(16, n_embd)
+                    LayerNorm(n_embd)
+                    #nn.GroupNorm(16, n_embd)
                 )
             else:
                 self.embd_norm_V.append(nn.Identity())
@@ -193,9 +193,9 @@ class ConvTransformerBackbone(nn.Module):
             x_A = self.gelu(self.embd_norm_A[idx](x_A))
 
             # Add video autoencoder
-            if idx % 3 == 0:  # Every third layer, add autoencoder
-                x_V_autoencoder = self.autoencoder_V(x_V)  # Pass through the video autoencoder
-                x_V = x_V + x_V_autoencoder  # Add the autoencoder output back to the feature
+            #if idx % 3 == 0:  # Every third layer, add autoencoder
+            #    x_V_autoencoder = self.autoencoder_V(x_V)  # Pass through the video autoencoder
+            #    x_V = x_V + x_V_autoencoder  # Add the autoencoder output back to the feature
 
             # Add audio autoencoder
             if idx % 3 == 0:  # Every third layer, add autoencoder

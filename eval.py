@@ -17,7 +17,7 @@ from libs.datasets import make_dataset, make_data_loader
 from libs.modeling import make_multimodal_meta_arch
 from libs.utils import valid_one_epoch, ANETdetection, fix_random_seed
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 def main(args):
     """0. load config"""
