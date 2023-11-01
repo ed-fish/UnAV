@@ -9,7 +9,7 @@ dataset: {
 model: {
   input_dim_V: 2048, 
   input_dim_A: 128,
-  use_abs_pe: False, 
+  use_abs_pe: True, 
   class_aware: True, 
   use_dependency: True,
   #backbone_version: "maxer",  #unav, maxer
@@ -22,7 +22,7 @@ opt: {
   warmup_epochs: 5, 
 }
 loader: {
-  batch_size: 5,
+  batch_size: 6,
 }
 train_cfg: {
   loss_weight: 1, 
@@ -37,4 +37,4 @@ test_cfg: {
   nms_sigma : 0.4,
   iou_threshold: 0.7,
 }
-output_folder: ./ckpt/
+output_folder: ./ckpt/Exp3/
