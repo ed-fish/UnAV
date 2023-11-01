@@ -34,7 +34,7 @@ class ConvTransformerBackbone(nn.Module):
         self.arch = arch
         self.max_len = max_len
         #self.relu = nn.ReLU(inplace=True)      #Commented out as replaced by GELU
-        self.gelu = nn.GELU
+        self.gelu = nn.GELU()
         self.scale_factor = scale_factor
         self.use_abs_pe = use_abs_pe
         self.branch_type = branch_type
@@ -56,22 +56,49 @@ class ConvTransformerBackbone(nn.Module):
             else:
                 in_channels_V = n_embd
                 in_channels_A = n_embd
+            
+            # VIDEO CONVOLUTION
             self.embd_V.append(MaskedConv1D(
-                    in_channels_V, n_embd, n_embd_ks,
-                    stride=1, padding=n_embd_ks//2, bias=(not with_ln)
-                )
+                in_channels_V, n_embd, n_embd_ks,
+                stride=1, padding=n_embd_ks // 2, bias=(not with_ln)
+                ))
+
+            # Define the video autoencoder
+            autoencoder_V = nn.Sequential(
+                nn.Conv1d(n_embd, n_embd //2 , kernel_size=3, stride=1, padding=1, bias=(not with_ln)),
+                nn.ReLU(),
+                nn.Conv1d(n_embd // 2, n_embd, kernel_size=3, stride=1, padding=1, bias=(not with_ln))
             )
+
+            # Add the autoencoder components to self
+            self.autoencoder_V = autoencoder_V
+
+            #  AUDIO CONVOLUTION
             self.embd_A.append(MaskedConv1D(
-                    in_channels_A, n_embd, n_embd_ks,
-                    stride=1, padding=n_embd_ks//2, bias=(not with_ln)
-                )
+                in_channels_A, n_embd, n_embd_ks,
+                stride=1, padding=n_embd_ks // 2, bias=(not with_ln)
+            ))
+
+            # Define the audio autoencoder
+            autoencoder_A = nn.Sequential(
+                nn.Conv1d(n_embd, n_embd // 2, kernel_size=3, stride=1, padding=1, bias=(not with_ln)),
+                nn.ReLU(),
+                nn.Conv1d(n_embd // 2, n_embd, kernel_size=3, stride=1, padding=1, bias=(not with_ln))
             )
+
+            #  Add the autoencoder components to self
+            self.autoencoder_A = autoencoder_A
+
+
+
             if with_ln:
                 self.embd_norm_V.append(
-                    LayerNorm(n_embd)
+                    #LayerNorm(n_embd)
+                    nn.GroupNorm(16, n_embd)
                 )
                 self.embd_norm_A.append(
-                    LayerNorm(n_embd)
+                    #LayerNorm(n_embd)
+                    nn.GroupNorm(16, n_embd)
                 )
             else:
                 self.embd_norm_V.append(nn.Identity())
@@ -164,6 +191,16 @@ class ConvTransformerBackbone(nn.Module):
 
             x_A, mask_A = self.embd_A[idx](x_A, mask_A)
             x_A = self.gelu(self.embd_norm_A[idx](x_A))
+
+            # Add video autoencoder
+            if idx % 3 == 0:  # Every third layer, add autoencoder
+                x_V_autoencoder = self.autoencoder_V(x_V)  # Pass through the video autoencoder
+                x_V = x_V + x_V_autoencoder  # Add the autoencoder output back to the feature
+
+            # Add audio autoencoder
+            if idx % 3 == 0:  # Every third layer, add autoencoder
+                x_A_autoencoder = self.autoencoder_A(x_A)  # Pass through the audio autoencoder
+                x_A = x_A + x_A_autoencoder  # Add the autoencoder output back to the feature
 
         # training: using fixed length position embeddings
         if self.use_abs_pe and self.training:
