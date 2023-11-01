@@ -21,7 +21,7 @@ from libs.utils import (train_one_epoch, valid_one_epoch, ANETdetection,
                         fix_random_seed, ModelEma)
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 #test change########
 
@@ -168,7 +168,7 @@ def main(args):
                     print_freq=args.print_freq
                     )
                 end = time.time()
-                print("evluation done! Total time: {:0.2f} sec".format(end - start))
+                print("evaluation done! Total time: {:0.2f} sec".format(end - start))
                 
                 if avg_mAP > best_mAP:
                     best_mAP = avg_mAP
