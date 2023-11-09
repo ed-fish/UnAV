@@ -37,4 +37,4 @@ test_cfg: {
   nms_sigma : 0.4,
   iou_threshold: 0.7,
 }
-output_folder: ./ckpt/Exp7/
+output_folder: ./ckpt/
