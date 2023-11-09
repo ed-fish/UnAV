@@ -367,6 +367,7 @@ def valid_one_epoch(
     """Test the model on the validation set"""
     # either evaluate the results or save the results
     assert (evaluator is not None) or (output_file is not None)
+    #evaluator = None       #uncomment to generate pickle file
 
     # set up meters
     batch_time = AverageMeter()
@@ -421,11 +422,13 @@ def valid_one_epoch(
 
     if evaluator is not None:
         if (ext_score_file is not None) and isinstance(ext_score_file, str):
-            results = postprocess_results(results, ext_score_file)
+            results = postprocess_results(results, ext_score_file) 
+        
         # call the evaluator
         _, mAP = evaluator.evaluate(results, verbose=True)
     else:
         # dump to a pickle file that can be directly used for evaluation
+        #output_file = './output_figures/output_file.pkl'
         with open(output_file, "wb") as f:
             pickle.dump(results, f)
         mAP = 0.0
