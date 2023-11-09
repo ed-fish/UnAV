@@ -21,7 +21,7 @@ from libs.utils import (train_one_epoch, valid_one_epoch, ANETdetection,
                         fix_random_seed, ModelEma)
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 #autoencoder test#
 
