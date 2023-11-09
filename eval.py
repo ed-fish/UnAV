@@ -111,5 +111,11 @@ if __name__ == '__main__':
                         help='Only save the ouputs without evaluation (e.g., for test set)')
     parser.add_argument('-p', '--print-freq', default=10, type=int,
                         help='print frequency (default: 10 iterations)')
+
+    # Hardcode the values for config and ckpt
+    #config_path = "UnAV/configs/avel_unav100.yaml"
+    #ckpt_path = "UnAV/ckpt/Exp11/avel_unav100_reproduce"
+
     args = parser.parse_args()
+    #args = argparse.Namespace(config=config_path, ckpt=ckpt_path, topk=-1, saveonly=False, print_freq=10)
     main(args)
