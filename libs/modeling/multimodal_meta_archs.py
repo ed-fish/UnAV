@@ -601,7 +601,7 @@ class PtTransformer(nn.Module):
             results_per_vid['feat_num_frames'] = nframes
             results.append(results_per_vid)
 
-        # step 3: postprocssing
+        # step 3: postprocessing
         results = self.postprocessing(results)
 
         return results
